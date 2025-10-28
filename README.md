@@ -164,18 +164,6 @@ model = Sequential([
 
 ---
 
-## 📊 Side‑by‑Side Summary
-
-| Resolution | Model | Accuracy | Precision | Recall | Notes |
-|---|---|---:|---:|---:|---:|---|
-| 500 m | RF | ~0.93 | ~0.91 | ~0.89  | RF baseline |
-| 64 m | RF | 0.9897 | 0.9878| 0.9167  | High‑res helpful, similar baseline |
-| 64 m | LSTM | 0.9844  | 0.8972| 0.9844  |High Res, LSTM |
-
-> **Interpretation:** Temporal dynamics (NDVI↓ followed by BAI↑) are critical; LSTM benefits from both **time** and **finer spatial resolution**.
-
----
-
 ## 🧭 Methodological Flow
 
 1. **Data acquisition & correction**  
