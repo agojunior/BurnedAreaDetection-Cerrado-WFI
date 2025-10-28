@@ -150,12 +150,13 @@ model = Sequential([
 **Training:** 50 epochs, batch 32, Adam(1e‑3), BCE loss.  
 **Notebook:** `HighResLSTM.ipynb` (sequence model at 64 m)  
 **Results (example from notebook):**
-| Metric | Value |
-|---|---|
-| Accuracy | ~0.95 |
-| Precision | ~0.94 |
-| Recall | ~0.93 |
-| AUC | ~0.96 |
+| Metric              | Value  |
+| ------------------- | ------ |
+| **Accuracy**        | 0.9844 |
+| **Precision (avg)** | 0.8972 |
+| **Recall (avg)**    | 0.9844 |
+| **F1-Score (avg)**  | 0.9356 |
+| **AUC (approx.)**   | ~0.98  |
 
 - **Artifacts:** `figures/64m_lstm_loss_acc.png`, `figures/64m_lstm_confusion.png`
 
