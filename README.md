@@ -126,11 +126,6 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_j
 | **Recall (avg)**    | 0.9167 |
 | **F1-Score (avg)**  | 0.9491 |
 
-- **Artifacts:** `64m_rf_confusion.png`, `64m_rf_importance.png`
-
-> *Place your exported figures here:*  
-> `<img src="64m_rf_confusion.png" width="480">`  
-> `<img src="64m_rf_importance.png" width="480">`
 
 ---
 
@@ -155,11 +150,9 @@ model = Sequential([
 | **Recall (avg)**    | 0.9844 |
 | **F1-Score (avg)**  | 0.9356 |
 
-- **Artifacts:** `64m_lstm_loss_acc.png`, `64m_lstm_confusion.png`
-
-> *Place your exported figures here:*  
-> `<img src="64m_lstm_loss_acc.png" width="480">`  
-> `<img src="64m_lstm_confusion.png" width="480">`
+<p align="center">
+  <img src="lstm64acc.png" alt="Random Forest 500m Feature Importance" width="600">
+</p>
 
 ---
 
