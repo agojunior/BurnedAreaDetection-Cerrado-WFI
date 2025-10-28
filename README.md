@@ -57,17 +57,50 @@ Each stack contains **9 channels** stored as GeoTIFFs in the folder
 
 ## ⚙️ Data Processing Workflow
 
-### 1️⃣ Data Organization — `organize.ipynb`
+###  Data Organization — `organize.ipynb`
 - Loads all WFI images and extracts pixel values.  
 - Aggregates multi-sensor, multi-temporal data into a structured DataFrame.  
 - Saves as **`organized.csv`** (≈3 GB), containing the complete spectral time series for each **500 m** grid cell.
 
-### 2️⃣ High-Resolution Sampling — `highres.ipynb`
-- Uses `gpk_spatial_grid.gpkg` for geospatial reference.  
-- Extracts **64 m × 64 m** patch‑level samples at each grid location.  
-- Computes per‑patch statistics and merges them with class labels.  
-- Output: **`highres.csv`** for modeling.
+### High-Resolution Sampling — highres.ipynb
 
+This notebook refines the dataset by mapping each grid cell of the Chapada dos Veadeiros National Park into multiple 64 m × 64 m patches.
+The gpk_spatial_grid.gpkg file provides the polygon grid used to overlay and extract reflectance and spectral indices from every available WFI scene.
+
+Processing steps:
+
+Geospatial extraction – For each polygon cell in the GeoPackage, pixel values from the 9 bands (Blue → NDWI) are read using rasterio.mask.
+
+Statistical summarization – Each patch is summarized by descriptive statistics (mean, median, standard deviation) per band, yielding one feature vector per patch.
+
+Temporal alignment – Observations from different dates are joined using the acquisition timestamp in the filename, maintaining time-series consistency.
+
+Label merging – Patches inherit the corresponding label (nb, pb, tb) from the master label table, later simplified to binary:
+
+0 = not / partially burned
+
+1 = completely burned.
+
+Export – The resulting dataset (highres.csv) contains thousands of samples representing spatially distinct 64 m patches across multiple years.
+
+🧩 Train/Test Split and Overfitting Prevention
+
+Because the dataset is spatially autocorrelated, naïve random splits can leak spatial information and artificially inflate accuracy.
+To avoid this, the workflow enforces:
+
+Spatial disjointness: training and testing sets come from different polygons in the GeoPackage grid, ensuring no neighboring patches appear in both sets.
+
+Temporal disjointness: when evaluating time-aware models (e.g., LSTM), later-year observations (e.g., 2022) are reserved exclusively for testing.
+
+Balanced sampling: class frequencies are normalized via random undersampling of the dominant “not burned” category.
+
+Cross-validation: Random Forest models use 5-fold stratified CV to validate stability.
+
+Regularization: LSTM models include dropout (0.3 – 0.5), early stopping, and learning-rate reduction on plateau.
+
+No data leakage: normalization and feature scaling are fitted only on the training data, then applied to the test set.
+
+Together, these controls ensure the excellent performance (AUC ≈ 0.94–0.96) reflects true generalization rather than memorization of spatial or temporal patterns.
 ---
 
 # 🤖 Models & Results (Separated by Resolution)
