@@ -106,11 +106,10 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_j
 | F1‑score | ~0.86 |
 
 - **Top features:** NIR, BAI
-- **Artifacts:** `500m_rf_confusion.png`, `500m_rf_importance.png`
+<p align="center">
+  <img src="500m_rf_importance.png" alt="Random Forest 500m Feature Importance" width="600">
+</p>
 
-> *Place your exported figures here:*  
-> `<img src="500m_rf_confusion.png" width="480">`  
-> `<img src="500m_rf_importance.png" width="480">`
 
 ---
 
