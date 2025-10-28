@@ -83,7 +83,7 @@ Label merging – Patches inherit the corresponding label (nb, pb, tb) from the 
 
 Export – The resulting dataset (highres.csv) contains thousands of samples representing spatially distinct 64 m patches across multiple years.
 
-🧩 Train/Test Split and Overfitting Prevention
+### Train/Test Split and Overfitting Prevention
 
 Because the dataset is spatially autocorrelated, naïve random splits can leak spatial information and artificially inflate accuracy.
 To avoid this, the workflow enforces:
