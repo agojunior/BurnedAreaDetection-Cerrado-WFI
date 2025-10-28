@@ -121,12 +121,12 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_j
 **Notebook:** `RFHighREs.ipynb` (RF on high‑resolution features)  
 **Setup:** same hyper‑params as RF‑500m unless otherwise noted.  
 **Results (example from notebook):**
-| Metric | Value |
-|---|---|
-| Accuracy | ~0.93 (±) |
-| Precision | ~0.91 |
-| Recall | ~0.90 |
-| AUC | ~0.94 |
+| Metric              | Value  |
+| ------------------- | ------ |
+| **Accuracy**        | 0.9897 |
+| **Precision (avg)** | 0.9878 |
+| **Recall (avg)**    | 0.9167 |
+| **F1-Score (avg)**  | 0.9491 |
 
 - **Artifacts:** `figures/64m_rf_confusion.png`, `figures/64m_rf_importance.png`
 
@@ -168,11 +168,11 @@ model = Sequential([
 
 ## 📊 Side‑by‑Side Summary
 
-| Resolution | Model | Accuracy | Precision | Recall | AUC | Notes |
+| Resolution | Model | Accuracy | Precision | Recall | Notes |
 |---|---|---:|---:|---:|---:|---|
-| 500 m | RF | ~0.93 | ~0.91 | ~0.89 | ~0.94 | Strong static baseline |
-| 64 m | RF | ~0.93 | ~0.91 | ~0.90 | ~0.94 | High‑res helpful, similar baseline |
-| 64 m | LSTM | 0.9844  | 0.8972| 0.9844  | ~0.98 | Best overall |
+| 500 m | RF | ~0.93 | ~0.91 | ~0.89  | RF baseline |
+| 64 m | RF | 0.9897 | 0.9878| 0.9167  | High‑res helpful, similar baseline |
+| 64 m | LSTM | 0.9844  | 0.8972| 0.9844  |High Res, LSTM |
 
 > **Interpretation:** Temporal dynamics (NDVI↓ followed by BAI↑) are critical; LSTM benefits from both **time** and **finer spatial resolution**.
 
