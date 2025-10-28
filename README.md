@@ -156,6 +156,17 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_j
 ---
 
 ### B2. 🔁 LSTM (LSTM-64m)
+
+**Architecture (typical):**
+```python
+model = Sequential([
+    LSTM(128, input_shape=(timesteps, features)),
+    Dropout(0.3),
+    Dense(64, activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+```
+**Training:** 50 epochs, batch 32, Adam(1e‑3), BCE loss.  
 **Notebook:** `HighResLSTM.ipynb` (sequence model at 64 m)  
 **Results (example from notebook):**
 | Metric | Value |
