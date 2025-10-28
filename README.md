@@ -172,7 +172,7 @@ model = Sequential([
 |---|---|---:|---:|---:|---:|---|
 | 500 m | RF | ~0.93 | ~0.91 | ~0.89 | ~0.94 | Strong static baseline |
 | 64 m | RF | ~0.93 | ~0.91 | ~0.90 | ~0.94 | High‑res helpful, similar baseline |
-| 64 m | LSTM | ~0.95 | ~0.94 | ~0.93 | ~0.96 | Best overall |
+| 64 m | LSTM | 0.9844  | 0.8972| 0.9844  | ~0.98 | Best overall |
 
 > **Interpretation:** Temporal dynamics (NDVI↓ followed by BAI↑) are critical; LSTM benefits from both **time** and **finer spatial resolution**.
 
