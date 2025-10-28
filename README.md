@@ -186,7 +186,6 @@ model = Sequential([
 4. **High‑res sampling (`highres.ipynb`)**  
 5. **Model training**  
    - RF‑500m → `rf.ipynb`  
-   - LSTM‑500m → *your LSTM‑organized notebook*  
    - RF‑64m → `RFHighREs.ipynb`  
    - LSTM‑64m → `HighResLSTM.ipynb`  
 6. **Evaluation and visualization**
