@@ -83,25 +83,6 @@ Label merging – Patches inherit the corresponding label (nb, pb, tb) from the 
 
 Export – The resulting dataset (highres.csv) contains thousands of samples representing spatially distinct 64 m patches across multiple years.
 
-### Train/Test Split and Overfitting Prevention
-
-Because the dataset is spatially autocorrelated, naïve random splits can leak spatial information and artificially inflate accuracy.
-To avoid this, the workflow enforces:
-
-Spatial disjointness: training and testing sets come from different polygons in the GeoPackage grid, ensuring no neighboring patches appear in both sets.
-
-Temporal disjointness: when evaluating time-aware models (e.g., LSTM), later-year observations (e.g., 2022) are reserved exclusively for testing.
-
-Balanced sampling: class frequencies are normalized via random undersampling of the dominant “not burned” category.
-
-Cross-validation: Random Forest models use 5-fold stratified CV to validate stability.
-
-Regularization: LSTM models include dropout (0.3 – 0.5), early stopping, and learning-rate reduction on plateau.
-
-No data leakage: normalization and feature scaling are fitted only on the training data, then applied to the test set.
-
-Together, these controls ensure the excellent performance (AUC ≈ 0.94–0.96) reflects true generalization rather than memorization of spatial or temporal patterns.
----
 
 # 🤖 Models & Results (Separated by Resolution)
 
