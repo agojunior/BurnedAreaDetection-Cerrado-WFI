@@ -100,13 +100,12 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_j
 **Results (example from notebook):**
 | Metric | Value |
 |---|---|
-| Accuracy | ~0.93 |
+| Accuracy |  0.97 |
 | Precision | ~0.91 |
-| Recall | ~0.89 |
-| F1‑score | ~0.90 |
-| AUC | ~0.94 |
+| Recall | ~0.82 |
+| F1‑score | ~0.86 |
 
-- **Top features:** NDVI, GEMI, EVI
+- **Top features:** NIR, BAI
 - **Artifacts:** `figures/500m_rf_confusion.png`, `figures/500m_rf_importance.png`
 
 > *Place your exported figures here:*  
@@ -156,7 +155,6 @@ model = Sequential([
 | **Precision (avg)** | 0.8972 |
 | **Recall (avg)**    | 0.9844 |
 | **F1-Score (avg)**  | 0.9356 |
-| **AUC (approx.)**   | ~0.98  |
 
 - **Artifacts:** `figures/64m_lstm_loss_acc.png`, `figures/64m_lstm_confusion.png`
 
