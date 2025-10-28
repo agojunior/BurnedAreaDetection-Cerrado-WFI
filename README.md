@@ -101,34 +101,6 @@ rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_j
 
 ---
 
-### A2. 🔁 LSTM (LSTM-500m)
-**Notebook:** *(link the LSTM-on-organized notebook you used)*  
-**Architecture (typical):**
-```python
-model = Sequential([
-    LSTM(128, input_shape=(timesteps, features)),
-    Dropout(0.3),
-    Dense(64, activation='relu'),
-    Dense(1, activation='sigmoid')
-])
-```
-**Training:** 50 epochs, batch 32, Adam(1e‑3), BCE loss.  
-**Results (example from notebook):**
-| Metric | Value |
-|---|---|
-| Accuracy | ~0.94–0.95 |
-| Precision | ~0.93–0.94 |
-| Recall | ~0.92–0.93 |
-| AUC | >0.95 |
-
-- **Artifacts:** `figures/500m_lstm_loss_acc.png`, `figures/500m_lstm_confusion.png`
-
-> *Place your exported figures here:*  
-> `<img src="figures/500m_lstm_loss_acc.png" width="480">`  
-> `<img src="figures/500m_lstm_confusion.png" width="480">`
-
----
-
 ## B) 64 m × 64 m — *highres.csv*
 
 ### B1. 🌲 Random Forest (RF-64m)
@@ -173,7 +145,6 @@ model = Sequential([
 | Resolution | Model | Accuracy | Precision | Recall | AUC | Notes |
 |---|---|---:|---:|---:|---:|---|
 | 500 m | RF | ~0.93 | ~0.91 | ~0.89 | ~0.94 | Strong static baseline |
-| 500 m | LSTM | ~0.94–0.95 | ~0.93–0.94 | ~0.92–0.93 | >0.95 | Gains from temporal context |
 | 64 m | RF | ~0.93 | ~0.91 | ~0.90 | ~0.94 | High‑res helpful, similar baseline |
 | 64 m | LSTM | ~0.95 | ~0.94 | ~0.93 | ~0.96 | Best overall |
 
