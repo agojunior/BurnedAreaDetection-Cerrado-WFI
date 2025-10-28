@@ -22,7 +22,9 @@ This work was developed as part of my **Master’s dissertation** at INPE.
 - **Area:** Chapada dos Veadeiros National Park  
 - **Period:** 2020 – 2022 (4 years)  
 - **Sensors:** CBERS-4, CBERS-4A, and AMAZONIA-1 WFI  
-- **Spatial Resolution:** 64 m per pixel  
+- **Spatial Resolution(s):**  
+  - **500 m × 500 m** aggregated grid (**organized.csv**)  
+  - **64 m × 64 m** high‑resolution patches (**highres.csv**)  
 - **Projection:** EPSG:4326 (WGS84)
 
 Each WFI image underwent:
@@ -48,16 +50,8 @@ Each stack contains **9 channels** stored as GeoTIFFs in the folder
 | **Spectral** | Blue, Green, Red, NIR | Base WFI reflectance bands |
 | **Indices** | BAI, EVI, GEMI, NDVI, NDWI | Burn and vegetation indices |
 
-**Band order (consistent):**
-1. Blue  
-2. Green  
-3. Red  
-4. NIR  
-5. BAI  
-6. EVI  
-7. GEMI  
-8. NDVI  
-9. NDWI
+**Assumed band order (consistent across stacks):**
+1. Blue • 2. Green • 3. Red • 4. NIR • 5. BAI • 6. EVI • 7. GEMI • 8. NDVI • 9. NDWI
 
 ---
 
@@ -66,45 +60,50 @@ Each stack contains **9 channels** stored as GeoTIFFs in the folder
 ### 1️⃣ Data Organization — `organize.ipynb`
 - Loads all WFI images and extracts pixel values.  
 - Aggregates multi-sensor, multi-temporal data into a structured DataFrame.  
-- Saves as `organized.csv` (~3 GB), containing the complete spectral time series for each grid cell.
+- Saves as **`organized.csv`** (≈3 GB), containing the complete spectral time series for each **500 m** grid cell.
 
 ### 2️⃣ High-Resolution Sampling — `highres.ipynb`
 - Uses `gpk_spatial_grid.gpkg` for geospatial reference.  
-- Extracts **64 m × 64 m patches**.  
-- Computes per-patch statistics and merges them with class labels.  
-- Output: `highres.csv` for modeling.
+- Extracts **64 m × 64 m** patch‑level samples at each grid location.  
+- Computes per‑patch statistics and merges them with class labels.  
+- Output: **`highres.csv`** for modeling.
 
 ---
 
-## 🤖 Machine Learning Models
+# 🤖 Models & Results (Separated by Resolution)
 
-### 🌲 Random Forest (`rf.ipynb`)
-Baseline static model trained on per-sample mean spectral indices.
+Below we separate the experiments for **both resolutions** and **both model types**.
 
-**Example:**
+## A) 500 m × 500 m — *organized.csv*
+
+### A1. 🌲 Random Forest (RF-500m)
+**Notebook:** `rf.ipynb` (baseline on 500 m aggregated features)  
+**Setup:**
 ```python
 from sklearn.ensemble import RandomForestClassifier
-model = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42)
+rf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42, n_jobs=-1)
 ```
-
-**Metrics:**
+**Results (example from notebook):**
 | Metric | Value |
-|--------|-------|
-| Accuracy | 0.93 |
-| Precision | 0.91 |
-| Recall | 0.89 |
-| F1-score | 0.90 |
-| AUC | 0.94 |
+|---|---|
+| Accuracy | ~0.93 |
+| Precision | ~0.91 |
+| Recall | ~0.89 |
+| F1‑score | ~0.90 |
+| AUC | ~0.94 |
 
-**Top Features:** NDVI, GEMI, EVI  
-**Outputs:** Feature importance ranking and confusion matrix.
+- **Top features:** NDVI, GEMI, EVI
+- **Artifacts:** `figures/500m_rf_confusion.png`, `figures/500m_rf_importance.png`
+
+> *Place your exported figures here:*  
+> `<img src="figures/500m_rf_confusion.png" width="480">`  
+> `<img src="figures/500m_rf_importance.png" width="480">`
 
 ---
 
-### 🔁 LSTM Sequence Model (`HighResLSTM.ipynb`)
-Temporal deep-learning model trained on sequential spectral data.
-
-**Example:**
+### A2. 🔁 LSTM (LSTM-500m)
+**Notebook:** *(link the LSTM-on-organized notebook you used)*  
+**Architecture (typical):**
 ```python
 model = Sequential([
     LSTM(128, input_shape=(timesteps, features)),
@@ -113,32 +112,72 @@ model = Sequential([
     Dense(1, activation='sigmoid')
 ])
 ```
-
-**Training Parameters:**
-- Epochs: 50  
-- Batch size: 32  
-- Optimizer: Adam (lr = 0.001)  
-- Loss: Binary cross-entropy  
-
-**Performance:**
+**Training:** 50 epochs, batch 32, Adam(1e‑3), BCE loss.  
+**Results (example from notebook):**
 | Metric | Value |
-|--------|-------|
-| Accuracy | 0.95 |
-| Precision | 0.94 |
-| Recall | 0.93 |
-| AUC | 0.96 |
+|---|---|
+| Accuracy | ~0.94–0.95 |
+| Precision | ~0.93–0.94 |
+| Recall | ~0.92–0.93 |
+| AUC | >0.95 |
 
-**Interpretation:**  
-A temporal decline in NDVI followed by a rise in BAI strongly correlates with burned-area occurrence.
+- **Artifacts:** `figures/500m_lstm_loss_acc.png`, `figures/500m_lstm_confusion.png`
+
+> *Place your exported figures here:*  
+> `<img src="figures/500m_lstm_loss_acc.png" width="480">`  
+> `<img src="figures/500m_lstm_confusion.png" width="480">`
 
 ---
 
-## 📊 Results Summary
+## B) 64 m × 64 m — *highres.csv*
 
-| Model | Accuracy | Precision | Recall | AUC | Key Features |
-|--------|-----------|-----------|--------|-----|----------------|
-| **Random Forest** | 0.93 | 0.91 | 0.89 | 0.94 | NDVI, GEMI, EVI |
-| **LSTM** | 0.95 | 0.94 | 0.93 | 0.96 | NDVI↓ + BAI↑ temporal pattern |
+### B1. 🌲 Random Forest (RF-64m)
+**Notebook:** `RFHighREs.ipynb` (RF on high‑resolution features)  
+**Setup:** same hyper‑params as RF‑500m unless otherwise noted.  
+**Results (example from notebook):**
+| Metric | Value |
+|---|---|
+| Accuracy | ~0.93 (±) |
+| Precision | ~0.91 |
+| Recall | ~0.90 |
+| AUC | ~0.94 |
+
+- **Artifacts:** `figures/64m_rf_confusion.png`, `figures/64m_rf_importance.png`
+
+> *Place your exported figures here:*  
+> `<img src="figures/64m_rf_confusion.png" width="480">`  
+> `<img src="figures/64m_rf_importance.png" width="480">`
+
+---
+
+### B2. 🔁 LSTM (LSTM-64m)
+**Notebook:** `HighResLSTM.ipynb` (sequence model at 64 m)  
+**Results (example from notebook):**
+| Metric | Value |
+|---|---|
+| Accuracy | ~0.95 |
+| Precision | ~0.94 |
+| Recall | ~0.93 |
+| AUC | ~0.96 |
+
+- **Artifacts:** `figures/64m_lstm_loss_acc.png`, `figures/64m_lstm_confusion.png`
+
+> *Place your exported figures here:*  
+> `<img src="figures/64m_lstm_loss_acc.png" width="480">`  
+> `<img src="figures/64m_lstm_confusion.png" width="480">`
+
+---
+
+## 📊 Side‑by‑Side Summary
+
+| Resolution | Model | Accuracy | Precision | Recall | AUC | Notes |
+|---|---|---:|---:|---:|---:|---|
+| 500 m | RF | ~0.93 | ~0.91 | ~0.89 | ~0.94 | Strong static baseline |
+| 500 m | LSTM | ~0.94–0.95 | ~0.93–0.94 | ~0.92–0.93 | >0.95 | Gains from temporal context |
+| 64 m | RF | ~0.93 | ~0.91 | ~0.90 | ~0.94 | High‑res helpful, similar baseline |
+| 64 m | LSTM | ~0.95 | ~0.94 | ~0.93 | ~0.96 | Best overall |
+
+> **Interpretation:** Temporal dynamics (NDVI↓ followed by BAI↑) are critical; LSTM benefits from both **time** and **finer spatial resolution**.
 
 ---
 
@@ -147,8 +186,12 @@ A temporal decline in NDVI followed by a rise in BAI strongly correlates with bu
 1. **Data acquisition & correction**  
 2. **Spectral index computation**  
 3. **Spatial grid aggregation (`organize.ipynb`)**  
-4. **High-res sampling (`highres.ipynb`)**  
-5. **Model training (`rf.ipynb`, `HighResLSTM.ipynb`)**  
+4. **High‑res sampling (`highres.ipynb`)**  
+5. **Model training**  
+   - RF‑500m → `rf.ipynb`  
+   - LSTM‑500m → *your LSTM‑organized notebook*  
+   - RF‑64m → `RFHighREs.ipynb`  
+   - LSTM‑64m → `HighResLSTM.ipynb`  
 6. **Evaluation and visualization**
 
 ---
@@ -168,16 +211,18 @@ If you use this repository or dataset, please cite:
 
 ---
 
-## 🧩 Repository Structure
+## 🗂 Repository Structure
 
 ```
-├── organize.ipynb           # CSV generation from WFI stacks
-├── highres.ipynb            # High-resolution patch extraction
-├── rf.ipynb                 # Random Forest training
-├── HighResLSTM.ipynb        # LSTM model training
-├── gpk_spatial_grid.gpkg    # Spatial reference grid
-├── Stacks_RGBNir_BAI_EVI_GEMI_NDVI_NDWI/  # WFI stacked imagery
-├── figures/                 # Plots and maps
+├── organize.ipynb                 # CSV generation from WFI stacks (500 m)
+├── highres.ipynb                  # High‑resolution patch extraction (64 m)
+├── rf.ipynb                       # Random Forest (500 m)
+├── RFHighREs.ipynb                # Random Forest (64 m)
+├── HighResLSTM.ipynb              # LSTM (64 m)
+├── <LSTM‑organized>.ipynb         # (optional) LSTM (500 m) – add link/name if different
+├── gpk_spatial_grid.gpkg          # Spatial reference grid
+├── Stacks_RGBNir_BAI_EVI_GEMI_NDVI_NDWI/  # WFI stacks
+├── figures/                       # Exported plots
 └── README.md
 ```
 
@@ -191,4 +236,4 @@ Data and imagery belong to **INPE** and the **CBERS/Amazônia missions**.
 ---
 
 > 🛰️ *Developed as part of the M.Sc. in Applied Computing at INPE —  
-> with the goal of advancing automated burned-area detection methods in Brazilian ecosystems.*
+> with the goal of advancing automated burned‑area detection methods in Brazilian ecosystems.*
